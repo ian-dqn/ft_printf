@@ -1,0 +1,3 @@
+printf("[True]%12.10d\n", i); == [True]  0002172645$
+printf("[True]%10.12d\n", i); == [True]000002172645$
+

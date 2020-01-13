@@ -66,35 +66,34 @@ void	ft_str_flag(va_list ap, s_data *data, char *s)
 
 void	ft_int_flag(va_list ap, s_data *data, int nb)
 {
-	int		len;
-
-	if (data->size > data->preci)
-		len = data->size - ft_intcount(nb);
+	(data->preci -= ft_intcount(nb)) && (data->size -= ft_intcount(nb));
+	if (data->preci > 0 && !data->flag_0)
+		data->size -= data->preci;
 	else
-		len = data->preci - ft_intcount(nb);
-//	printf("len==%d\tpreci==%d\tsize==%d\n", len, data->preci, data->size);
-	while (len > 0)
+		data->preci = 0;
+//	printf("preci==%d\tsize==%d\n", data->preci, data->size);
+	while (!data->flag_m && data->size-- > 0)
+		write(1, " ", 1);
+	if (nb < 0 && !ft_compar("xX", data->c))
 	{
-	if (data->flag_0 || (data->flag_p) /*&& data->preci < data->size)*/)
-		while (len-- > 0 /*&& data->size-- > data->preci*/)
-			write(1, "0", 1);
-	if (data->flag_p || (len && !data->flag_m))
-		while (len-- > 0 && data->size-- > data->preci)
-			write(1, " ", 1);
+		write(1, "-", 1);
+		nb *= -1;
+	}
+	while (data->preci-- > 0)
+		write(1, "0", 1);
 	if (data->flag_m)
 	{
 		if (ft_compar_data(data, "xX", data->c))
 			ft_putnbr_hexa(nb, data->c);
 		else
 			ft_putnbr(nb);
-		while (len-- > 0)
+		while (data->size-- > 0)
 			write(1, " ", 1);
 	}
 	else if (ft_compar_data(data, "xX", data->c))
 			ft_putnbr_hexa(nb, data->c);
 	else
 		ft_putnbr(nb);
-	}
 }
 
 void	ft_unsigned_flag(va_list ap, s_data *data, int nb)
@@ -144,7 +143,7 @@ void	num_bloc(va_list ap, s_data *data, char *fmt)
 //	printf("va_arg==%d\n", nb);
 //	printf("va_arg==%d\tdata==%d\n", ft_intcount(nb), data->size);
 //	printf("nb_size==%d\tsize==%d\tpreci==%d\n", ft_intcount(nb), data->size, data->preci);
-	if (nb < 0 && data->flag)
+	if (nb < 0 && data->flag && !ft_compar_data(data, "xX", data->c))
 	{
 		write(1, "-", 1);
 		nb *= -1;
@@ -215,40 +214,9 @@ char	*ft_preci(va_list ap, s_data *data, char *fmt)
 	int i;
 
 	i = 0;
-	//	printf("%s\n", ft_itoa_hexa(data, 42, 2));
-	//	return (NULL);
 	!ft_compar("cspdiuxX", fmt[i]) && (fmt = ft_gest_flag(ap, data, fmt));
-	/*while (!ft_compar("cspdiuxX.", fmt[i]) && fmt[i])
-	{
-		switch(fmt[i])
-		{
-			case '.':
-				data->flag_p = 1;
-				break ;
-			case '-':
-				data->flag_m = 1;
-				break ;
-			case '0':
-				data->flag_0 = 3;
-				i++;
-				break ;
-			case '*' :
-				data->size = va_arg(ap, int);
-				break ;
-		}
-		if (ft_isdigit(fmt[i]))
-		{
-			data->size = ft_atoi(&fmt[i]);
-	//		printf("preci==%i\n", data->preci);
-			while(ft_isdigit(fmt[i]))
-				i++;
-		}
-		else
-			i++;*/
-//		printf("fmt==%s\n", fmt);
-	//	printf("data%d\n", data->size);
+
 	data->c = fmt[i];
-//		printf("c==%c\n", data->c);
 	if (ft_compar("cdixX", fmt[i]))
 		num_bloc(ap, data, &fmt[i]);
 	if (fmt[i] == 's')
@@ -282,16 +250,13 @@ int ft_printf(char *fmt, ...)
 
 int main()
 {
-	unsigned int i = 2172645;
-//	ft_printf("%11d", 535);
+	unsigned int i = -2172645;
 //	unsigned int i = 2147483690;
-//	ft_putnbr_base(i, "0123456789abcdef");
-//	int a = 42 / 16;
-//	ft_printf("%*s\ttutu%10i\n", 15, "12345", 15);
-//	printf("%*s\ttutu%10i\n", 15, "12345", 15);
-//	printf("%s\n", "0123456789");
-	ft_printf("[Mine]%-10d %10s  gggg   %.3x\n", i, "01234567890123456789", -42);
-	printf("[True]%-10d %10s  gggg   %.3x\n", i, "01234567890123456789", -42);
+//	ft_printf("%*s\tgglg%10i\n", 15, "12345", 15);
+//	printf("%*s\tgglg%10i\n", 15, "12345", 15);
+	ft_printf("[Mine]|%12.10i| %10s  gggg   %.3x\n", i, "01234567890123456789", -42);
+	printf("[True]|%12.010i| %10s  gggg   %.3x\n", i, "01234567890123456789", -42);
+	printf("[True]|%012.10i|", i);
 //	printf("[True]%-10d\n", i);
 //	printf("%*d, %3s\n",10, i, "fghjk");
 	return (0);

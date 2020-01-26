@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/08 08:36:03 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/01/10 16:19:06 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/01/26 00:28:18 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,10 @@ s_data	*init_struct(s_data *data)
 	data->flag_0 = 0;
 	data->flag_m = 0;
 	data->flag_p = 0;
-	data->preci = 0;
+	data->preci = -1;
+	data->size = 0;
 	data->c = 'i';
-	data->s = ft_strdup("");
+//	data->s = ft_strdup("");
 	return (data);
 }
 

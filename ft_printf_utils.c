@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/08 08:36:03 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/01/26 00:28:18 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/02/03 16:23:50 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ int	ft_intcount(int n)
 	return (++count);
 }
 
-char			*ft_itoa(int n)
+char			*ft_itoa(long n)
 {
 	char			*str;
 	int				i;
@@ -156,32 +156,35 @@ char			*ft_itoa(int n)
 	return (str);
 }
 
-void	ft_putnbr_hexa(int n, char c)
+int	ft_putnbr_hexa(long n, char c)
 {
 	char *base;
-	unsigned int nb;
 	int len;
 
 	if (!(base = (char *)malloc (17)))
-		return ;
-	if (c == 'x')
-		base = "0123456789abcdef";
-	else
+		return 0;
+	if (c == 'X')
 		base = "0123456789ABCDEF";
-	nb = n;
-	len = ft_strlen(base);
-	if (nb >= len)
+	else
+		base = "0123456789abcdef";
+/*	if (c == 'p')
 	{
-		ft_putnbr_hexa((nb / len), c);
-		ft_putnbr_hexa((nb % len), c);
+		ft_putstr("0x");
+		write(1, "0x", 2);
+	}
+*/	len = ft_strlen(base);
+	if (n >= len)
+	{
+		ft_putnbr_hexa((n / len), c);
+		ft_putnbr_hexa((n % len), c);
 	}
 	else
-		write(1, &base[nb], 1);
+		write(1, &base[n], 1);
+	return (1);
 }
 
 void	ft_putnbr(long n)
 {
-//	printf("nb == %ld", n);
 	if (n < 0)
 	{
 		write(1, "-", 1);
@@ -212,32 +215,33 @@ int ft_atoi(char *s)
 
 
 
-char	*ft_itoa_hexa(s_data *data, int n, int nb_size)
+int	ft_putitoa_hexa(long n, char *base)
 {
-	char			*base;
-	char			*s;
-	int				i;
-	int				j;
-	unsigned int	nb;
+	char	*s;
+	int		i;
+	int		j;
+	long	nb_size;
+	char tmp;
 
-	if (!(base = (char *)malloc(17)) || !(s = (char *)malloc(sizeof(char) * (16 + 1))))
-		return (NULL);
-	nb = n;
-	i = 1;
+	nb_size = ft_intcount(n);
+	if (!(s = (char *)malloc(sizeof(char) * (12 + 1))))
+		return (0);
+	i = 0;
 	j = 0;
-	if (data->c == 'x')
-		base = "0123456789abcdef";
-	if (data->c == 'X')
-		base = "0123456789ABCDEF";
-	while (nb > 0)
+	while (n > 0)
 	{
-		while (n > 16)
-		{
-			n %= 16;
-			i++;
-		}
-		s[j++] = base[nb % (i - 1)];
-		nb = nb / (16 * (i - 1));
+		s[i++] = (base[n % 16]);
+		n /= 16;
 	}
-	return (s);
+	(s[i++] = 'x') && (s[i++] = '0') && (s[i] = 0);
+	while (--i > j)
+	{
+		tmp = s[i];
+		s[i] = s[j];
+		s[j++] = tmp;
+	}
+//	write(1, "0x", 2);
+	ft_putstr(s);
+	free(s);
+	return (1);
 }

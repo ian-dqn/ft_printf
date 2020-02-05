@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/08 08:35:54 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/01/25 20:09:26 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/02/03 14:39:14 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ int		ft_compar(char *set, char c);
 int		ft_compar_data(s_data *data, char *set, char c);
 int		ft_intcount(int n);
 void	ft_putnbr(long n);
-void	ft_putnbr_hexa(int n, char c);
+int		ft_putnbr_hexa(long n, char c);
 int 	ft_atoi(char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_itoa(int n);
-char	*ft_itoa_hexa(s_data *data, int n, int nb_size);
+char	*ft_itoa(long n);
+int		ft_putitoa_hexa(long n, char *base);
 
 #endif

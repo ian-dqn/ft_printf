@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/09 18:32:38 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/02/05 15:18:22 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/02/10 15:29:41 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,21 @@ void ft_width(s_data *data, int len)
 	(data->size -= len);
 }
 
+void	null_str(va_list ap, s_data *data)
+{
+	(data->preci < 6 && data->preci > -1 ? data->size -= data->preci : (data->size -= 6));
+	while (!data->flag_m && data->size-- > 0)
+		write (1, " ", 1);
+	if (data->preci < 6 && data->preci > -1)
+		write(1, "(null)", data->preci);
+	else
+		write(1, "(null)", 6);
+	while (data->size-- > 0)
+		write (1, " ", 1);
+	return ;
+
+}
+
 void	str_bloc(va_list ap, s_data *data, char *fmt)
 {
 	char	*s;
@@ -82,8 +97,11 @@ void	str_bloc(va_list ap, s_data *data, char *fmt)
 	int		data_size;
 
 	s = va_arg(ap, char *);
-	if (!s || !*s)
+	if (!s)
+	{
+		null_str(ap, data);
 		return ;
+	}
 	len = ft_strlen(s);
 	data->preci > -1 && data->preci < len && (len = data->preci);
 	while (!data->flag_m && data->size-- > len)
@@ -108,78 +126,67 @@ void	ft_char_flag(va_list ap, s_data *data)
 	}
 	else
 		write(1, &c, 1);
-
 }
 
 void	ft_int_flag(va_list ap, s_data *data, int nb)
 {
+	//	printf("1.size==%d, preci==%d\n", data->size, data->preci);
 	(data->preci -= ft_intcount(nb));
 	(data->size -= ft_intcount(nb));
-/*	if (data->preci > 0 && !data->flag_0)
-		(nb > 0 ? data->size -= data->preci : (data->size -= ++data->preci));
-	else
-		data->preci = 0;
-	printf("preci==%d\tsize==%d\tnb==%d\n", data->preci, data->size, ft_intcount(nb));
-*/	while (!data->flag_m && data->size-- > 0)
+	(data->preci > 0 ? data->size -= data->preci : 0);
+	//	printf("size==%d, preci==%d, int_size==%d\n", data->size, data->preci, ft_intcount(nb));
+	(nb < 0 ? data->size-- : 0);
+	if (data->flag_0 && !data->flag_p)
+	{
+		ft_compar("id", data->c) && nb < 0 && write(1, "-", 1) && (nb *= -1);
+		while (!data->flag_m && data->size-- > 0)
+			write(1, "0", 1);
+	}
+	while (!data->flag_m && /*!data->flag_0 &&*/ data->size-- > 0)
 		write(1, " ", 1);
 	ft_compar("id", data->c) && nb < 0 && write(1, "-", 1) && (nb *= -1);
-	while (data->preci-- > 0)
+	while (data->preci-- > 0 || (data->flag_0 && !data->flag_m && data->size-- > 0))
 		write(1, "0", 1);
 	if (data->flag_m)
-	{	//--------->necessite putnbr for xX, c, id (&p, u)
+	{
 		if (ft_compar_data(data, "xX", data->c))
 			ft_putnbr_hexa(nb, data->c);
 		else
 			ft_putnbr(nb);
 		while (data->size-- > 0)
-			write(1, " ", 1);
+			(data->flag_0 ? write(1, "0", 1) : write(1, " ", 1));
 	}
 	else if (ft_compar_data(data, "xX", data->c))
-			ft_putnbr_hexa(nb, data->c);
+		ft_putnbr_hexa(nb, data->c);
 	else
 		ft_putnbr(nb);
 }
 
 void	ft_unsigned_flag(va_list ap, s_data *data, int nb)
 {
-	int size;
+	int len;
 
-	data->c == 'p' ? (size = 11) : (size = ft_intcount(nb));
-	(data->preci -= size);
-	(data->size -= size);
-//	printf("preci==%d\tsize==%d\tnb==%d\tc==%c\n", data->preci, data->size, nb, data->c);
-	
-	if (data->preci > 0 && !data->flag_0)
-		data->size -= data->preci;
-	else
-		data->preci = 0;
+	data->c == 'p' ? (len = 11) : (len = ft_intcount(nb));
+	(data->preci -= len);
+	(data->size -= len);
+	(data->preci > 0 ? data->size -= data->preci : 0);
+	//	printf("|size==%d, preci==%d, int_size==%d\n|", data->size, data->preci, len);
+	if (data->flag_0 && !data->flag_p)
+		while (!data->flag_m && data->size-- > 0)
+			write(1, "0", 1);
 	while (!data->flag_m && data->size-- > 0)
 		write(1, " ", 1);
-	while (data->preci-- > 0)
+	while (data->preci-- > 0 || (data->flag_0 && !data->flag_m && data->size-- > 0))
 		write(1, "0", 1);
 	if (data->flag_m)
 	{
-		data->c == 'p' ? ft_putitoa_hexa(nb, "0123456789abcdef") : ft_putnbr(nb);
-		/*if (data->c == 'p')
-			ft_putnbr_hexa(nb, 'p');
-		else
-			(!data->c == 'p') && (ft_putnbr(nb));
-*/
+		ft_putnbr(nb);
 		while (data->size-- > 0)
-			write(1, " ", 1);
+			(data->flag_0 ? write(1, "0", 1) : write(1, " ", 1));
 	}
 	else
-	{
-//		printf("--------------%c", data->c);
-		//ft_putstr(&data->c);
-	//	data->c == 'p' ? ft_putnbr_hexa(nb, data->c) : ft_putnbr(nb);
-		if (data->c == 'p')
-		{
-	//		write(1, "0x", 2);
-			if (!ft_putitoa_hexa(nb, "0123456789abcdef"))
-				ft_putstr("error putnbr hexa\n");
-		}
-	}
+		ft_putnbr(nb);
+
 }
 
 void	unsigned_bloc(va_list ap, s_data *data, char *fmt)
@@ -188,16 +195,20 @@ void	unsigned_bloc(va_list ap, s_data *data, char *fmt)
 	int nb_size;
 
 	nb = va_arg(ap, unsigned int);
-/*	if (data->c == 'p')
+	/*	if (data->c == 'p')
 		nb *= 0x100;
-*/	(data->c == 'p' ? (nb_size = ft_intcount(nb) + 4) : (nb_size = ft_intcount(nb)));
-	if ((nb_size = ft_intcount(nb) < data->size || nb_size < data->preci))
+*/	
+	if (nb == 0 && data->preci == 0)
+		while(data->size-- > 0)
+			write (1, " ", 1);
+//	(data->c == 'p' ? (nb_size = ft_intcount(nb) + 4) : (nb_size = ft_intcount(nb)));
+	else if ((nb_size = ft_intcount(nb) < data->size || nb_size < data->preci))
 		ft_unsigned_flag(ap, data, nb);
-	else
+/*	else
 	{
-		data->c == 'p' ? ft_putitoa_hexa(nb, "0123456789abcdef")/*ft_putnbr_hexa(nb, 'p')*/ : ft_putnbr(nb);
+		data->c == 'p' ? ft_putnbr_hexa(nb, 'p') : ft_putnbr(nb);
 //	printf("nb==%u\n", nb);
-	}
+	}*/
 }
 
 void	num_bloc(va_list ap, s_data *data, char *fmt)
@@ -208,7 +219,10 @@ void	num_bloc(va_list ap, s_data *data, char *fmt)
 
 	i = 0;
 	nb = va_arg(ap, int);
-	if ((ft_intcount(nb) < data->size) || ft_intcount(nb) < data->preci)
+	if (nb == 0 && data->preci == 0)
+		while(data->size-- > 0)
+			write (1, " ", 1);
+	else if ((ft_intcount(nb) < data->size) || ft_intcount(nb) < data->preci)
 		ft_int_flag(ap, data, nb);
 	else if (ft_compar_data(data, "xX", data->c))
 		ft_putnbr_hexa(nb, data->c);
@@ -219,8 +233,8 @@ void	num_bloc(va_list ap, s_data *data, char *fmt)
 
 char	*ft_gest_flag(va_list ap, s_data *data, char *fmt)
 {
-	int nb;
-	int i;
+	int	nb;
+	int	i;
 
 	i = 0;
 	while (!ft_compar("cspdiuxX%", fmt[i]) && fmt[i])
@@ -229,15 +243,20 @@ char	*ft_gest_flag(va_list ap, s_data *data, char *fmt)
 		if (fmt[i] == '*')
 			data->size = va_arg(ap, int) && (i += 2);
 		else if (fmt[i] == '0')
-			data->flag_0 = 1;
-		/*else */if (ft_isdigit(fmt[i]))
 		{
-			!data->flag_0 ? (data->size = ft_atoi(&fmt[i])) : (data->preci = ft_atoi(&fmt[i]));
+			data->flag_0 = 1;
+			i++;
+		}
+		if (ft_isdigit(fmt[i]))
+		{
+			//!data->flag_0 ? (data->size = ft_atoi(&fmt[i])) : (data->preci = ft_atoi(&fmt[i]));
+			data->size = ft_atoi(&fmt[i]);
 			while (ft_isdigit(fmt[i]))
 				i++;
 		}
 		else if (fmt[i] == '.')
 		{
+			data->preci = 0;
 			if (fmt[++i] == '*')
 				data->preci = va_arg(ap, int) && i++;
 			data->flag_p = 1;
@@ -310,12 +329,14 @@ int main()
 //	ft_printf("[MINE]|%-2c| |%-12.10s|  gggg   %.3x\n", 'a', "01234567890123456789", -42);
 //	printf("[TRUE]|%-2c| |%-12.10s|  gggg   %.3x\n", 'a', "01234567890123456789", -42);
 //	ft_printf("[MINE]|%.2s| |%2s| |%10.2s| |%.10s|\n", "012345", "012345", "012345", "012345");
-	printf("[TRUE]|%.2c| |%2c| |%10.2c| |%.10c|\n", a, a, a, a);
-	ft_printf("[MINE]|%.2c| |%2c| |%10.2c| |%.10c|\n", a, a, a, a);
+//	printf("[TRUE]|%.2c| |%2c| |%10.2c| |%.10c|\n", a, a, a, a);
+//	ft_printf("[MINE]|%.2c| |%2c| |%10.2c| |%.10c|\n", a, a, a, a);
 //	ft_printf("[MINE]|%2s|\n", "012345");
 //	printf("[TRUE]|%10.8s| |%2s| |%10.2s| |%.10s|\n", "012345", "012345", "012345", "012345");
 //	printf("[True]|%14.12i| %10s  gggg   %.3x\n", i, "01234567890123456789", -42);
-//	printf("[TRUE]|%10.8i|,|%5u|\n", 12345, i);
+	printf("[TRUE]|%12s|\n", NULL);
+	ft_printf("[MINE]|%5.9s|\n", NULL);
+//	ft_printf("[MINE]|%7u|\n", 33);
 //	ft_printf("[MINE]|%12p|,|%5u|\n", s, i);
 //	ft_printf("[MINE]|%.2c|,|%4.2c|\n", 'a', 'b');
 //	printf("%*d, %3s\n",10, i, "fghjk");

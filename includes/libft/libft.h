@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/10 17:14:32 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/02/29 16:43:06 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/03/02 15:53:14 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int				ft_intcount(long long n);
 int				ft_compar(char *set, char c);
 int				ft_hexacount(unsigned int n, unsigned int base_size);
 char			*ft_itoa_base(unsigned int nb, char *base);
-char 			*ft_rev_str(char *str);
+char			*ft_rev_str(char *str);
 
 /*
  ** listes chainees

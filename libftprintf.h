@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 20:04:57 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/03/02 19:13:44 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/03/02 15:24:32 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 typedef struct	s_struct
 {
+	va_list	ap;
 	int		flag;
 	int		flag_m;
 	int		flag_p;
@@ -28,6 +29,7 @@ typedef struct	s_struct
 	int		size;
 	int		preci;
 	char	c;
+	char	*s;
 }				t_data;
 
 t_data			*init_struct(t_data *data);

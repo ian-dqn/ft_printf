@@ -6,7 +6,7 @@
 /*   By: iaduquen <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/09 18:32:38 by iaduquen          #+#    #+#             */
-/*   Updated: 2020/03/02 19:13:18 by iaduquen         ###   ########.fr       */
+/*   Updated: 2020/03/02 15:24:12 by iaduquen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int		ft_printf(char *fmt, ...)
 	ret = 0;
 	wr = 0;
 	va_start(ap, fmt);
-	while (*fmt && !fmt)
+	while (*fmt)
 	{
 		if (*fmt == '%' && ft_verif(*++fmt))
 		{
